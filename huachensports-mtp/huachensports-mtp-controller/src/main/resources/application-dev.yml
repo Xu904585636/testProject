@@ -35,7 +35,7 @@ redis:
   testWhileIdle: true
   timeBetweenEvictionRunsMillis: 30000
 server:
-  port: 12005
+  port: 8085
   session-timeout: 1800
   context-path: /hc-mtp-api
 spring:
