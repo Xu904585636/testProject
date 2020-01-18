@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingleadsw.ysm.dao.activity.IApplyMapper">
+
+    <select id="selectApplyList" resultType="com.kingleadsw.ysm.po.activity.ApplyPO" parameterType="ApplyPO">
+        SELECT
+            ca.*, ac.avatar AS avatar
+        FROM
+            cms_apply ca
+        LEFT JOIN ams_customer ac ON ac.id = ca.customer_id and ac.enabled = 1
+        where ca.enabled = 1 and ca.activity_id = #{activityId}
+        <if test="groupId != null and groupId != ''">
+           and ca.group_id = #{groupId}
+        </if>
+    </select>
+
+    <select id="getApplyList" resultType="com.kingleadsw.ysm.po.activity.ApplyPO">
+        SELECT
+            cap.id,
+            cap.apply_name AS applyName,
+            cap.mobile,
+            cap.create_time AS createTime,
+            cg.group_name AS groupName,
+            ca.activity_name AS activityName
+        FROM
+            cms_apply cap
+        LEFT JOIN cms_group cg ON cap.group_id = cg.id AND cg.enabled = 1
+        LEFT JOIN cms_activity ca ON cap.activity_id = ca.id AND ca.enabled = 1
+        WHERE cap.enabled = 1
+        <if test="cm != null">
+            <if test="cm.activityId != null and cm.activityId!=''">
+                AND cap.activity_id = #{cm.activityId}
+            </if>
+            <if test="cm.groupId != null and cm.groupId!=''">
+                AND cap.group_id = #{cm.groupId}
+            </if>
+        </if>
+        ORDER BY cap.create_time DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingleadsw.ysm.dao.activity.IGroupMapper">
+
+
+    <select id="getGroupList" parameterType="Long" resultType="com.kingleadsw.ysm.po.activity.GroupPO">
+       SELECT
+            cg.*, ca.group_number AS maxNumber,COUNT(cap.id) AS applyNumber
+        FROM
+            cms_group cg
+        LEFT JOIN cms_activity ca ON ca.id = cg.activity_id	AND ca.enabled = 1
+        LEFT JOIN cms_apply cap ON cap.group_id = cg.id AND cap.enabled = 1
+        WHERE
+            cg.enabled = 1
+        AND cg.activity_id = #{activityId}
+        GROUP BY cg.id
+    </select>
+        
+   <select id="getAllList" resultType="com.kingleadsw.ysm.po.activity.GroupPO">
+      SELECT
+            ca.id as activityId,
+            ca.activity_name AS activityName,
+            cg.group_name AS groupName,
+            cg.id
+        FROM
+            cms_activity ca
+        inner JOIN cms_group cg ON ca.id = cg.activity_id
+        WHERE
+            ca.enabled = 1 AND cg.enabled = 1
+    </select>
+
+
+</mapper>

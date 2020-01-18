@@ -1,0 +1,39 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.kingleadsw.ysm.props.ApplicationProps",
+      "name": "",
+      "type": "com.kingleadsw.ysm.props.ApplicationProps"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.kingleadsw.ysm.props.ApplicationProps",
+      "name": "application-name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.kingleadsw.ysm.props.ApplicationProps",
+      "name": "cache-namespace",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.kingleadsw.ysm.props.ApplicationProps",
+      "name": "max-file-size",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.kingleadsw.ysm.props.ApplicationProps",
+      "defaultValue": 0,
+      "name": "token-idle-time",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.kingleadsw.ysm.props.ApplicationProps",
+      "defaultValue": 1440,
+      "name": "token-live-time",
+      "type": "java.lang.Integer"
+    }
+  ]
+}

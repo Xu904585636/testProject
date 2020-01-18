@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kingleadsw.ysm.dao.activity.IActivityMapper">
+
+    <select id="getByPages" resultType="com.kingleadsw.ysm.po.activity.ActivityPO">
+        SELECT
+        ca.*, COUNT(ap.id) AS applyCount,ccc.category_name as categoryName
+        FROM
+        cms_activity ca
+        LEFT JOIN cms_apply ap ON ap.activity_id = ca.id and ap.enabled = 1
+        LEFT JOIN cms_activity_category ccc ON ccc.id = ca.category_id and ccc.enabled = 1
+        WHERE
+        ca.enabled = 1
+        <if test="cm != null">
+            <if test="cm.categoryId != null and cm.categoryId!=''">
+                AND ca.category_id = #{cm.categoryId}
+            </if>
+            <if test="cm.activityName != null and cm.activityName!=''">
+                AND ca.activity_name like concat('%',#{cm.activityName},'%')
+            </if>
+        </if>
+        GROUP BY
+        ca.id
+        ORDER BY update_time DESC
+    </select>
+
+    <select id="getActivityInfo" parameterType="Long" resultType="com.kingleadsw.ysm.po.activity.ActivityPO">
+        SELECT
+        ca.*, COUNT(ap.id) AS applyCount,COUNT(cc.id) AS collectionCount
+        FROM
+        cms_activity ca
+        LEFT JOIN cms_apply ap ON ap.activity_id = ca.id and ap.enabled = 1
+        LEFT JOIN cms_collection cc ON cc.activity_id = ca.id and cc.enabled = 1
+        LEFT JOIN cms_activity_category ccc ON ccc.id = ca.category_id and ccc.enabled = 1
+        WHERE
+        ca.enabled = 1 and ca.id = #{id}
+
+    </select>
+
+    <select id="getApplyActivity" resultType="com.kingleadsw.ysm.po.activity.ActivityPO">
+        SELECT
+            ca.*,cg.group_name AS applyGroupName,cap.apply_name AS applyName,cap.mobile AS applyMobile
+        FROM
+            cms_apply cap
+        LEFT JOIN cms_group cg ON cap.group_id = cg.id AND cg.enabled = 1
+        LEFT JOIN cms_activity ca ON cap.activity_id = ca.id AND ca.enabled = 1
+        WHERE cap.enabled = 1
+        <if test="cm != null">
+            <if test="cm.customerId != null and cm.customerId!=''">
+                AND cap.customer_id = #{cm.customerId}
+            </if>
+            <if test="cm.activityType != null and cm.activityType == 1 ">
+                AND ca.activity_end_time > unix_timestamp(now())
+            </if>
+            <if test="cm.activityType != null and cm.activityType == 2 ">
+                AND unix_timestamp(now()) > ca.activity_end_time
+            </if>
+        </if>
+        ORDER By cap.create_time desc
+    </select>
+
+    <select id="getCollectionActivity" resultType="com.kingleadsw.ysm.po.activity.ActivityPO">
+        SELECT
+            ca.*, COUNT(cap.id) AS hasApply,
+        (SELECT COUNT(id) FROM cms_apply WHERE enabled = 1 AND activity_id = ca.id) AS applyCount
+        FROM
+            cms_collection cc
+        LEFT JOIN cms_activity ca ON ca.id = cc.activity_id
+        AND ca.enabled = 1
+        LEFT JOIN cms_apply cap ON cap.activity_id = ca.id
+        AND cap.customer_id = cc.customer_id
+        AND cap.enabled = 1
+        WHERE
+            cc.enabled = 1
+        <if test="cm != null">
+            <if test="cm.customerId != null and cm.customerId!=''">
+                AND cc.customer_id = #{cm.customerId}
+            </if>
+        </if>
+        GROUP BY
+            ca.id
+        ORDER BY cc.create_time
+    </select>
+
+ 
+
+</mapper>
